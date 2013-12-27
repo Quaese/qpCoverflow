@@ -1,0 +1,16 @@
+STRUKTUR: canvasStack
+---------------------
+
+canvasStack[index]
+	.image					// DOM-Element des Bildes, das im Canvas angezeigt werden soll
+	.imgWidth				// Breite des skalierten Bildes
+	.imgHeight				// Höhe des skalierten Bildes (wird auf halbe Höhe des Ausgabe-Canvas skaliert, wegen Spiegelung)
+	.skewWidth				// Breite des gekippten Bildes (falls fester Skew-Wert verwendet wird)
+
+	.bufferCanvas			// Canvas, der Bild mit Spiegelund in skalierter Ausgangsgrösse enthält (wird immer zum Kippen = skew verwendet)
+		.canvas 			// jQuery Element des bufferCanvas
+		.context			// Context des bufferCanvas
+
+	.renderCanvas			// Canvas, in den das gekippte (skewed) Bild gerendert wird (Dimensionen werden durch widget.skewWidth jeweils berechnet)
+		.canvas 			// jQuery Element des renderCanvas
+		.context			// Context des renderCanvas
