@@ -1,0 +1,8 @@
+/* Wrapper für Coverflow (DIV) */
+.qpCoverflow{
+	background: #111;
+}
+/* Coverflow-Element (UL) */
+.qpCoverflowList{}
+/* Coverflow-Element (LI) */
+.qpCanvasListItem{}
