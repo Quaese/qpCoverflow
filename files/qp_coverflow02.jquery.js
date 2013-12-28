@@ -6,6 +6,12 @@ $(function() {
         //oldIndex: undefined,      // Index des bisher gewählten Bildes
         //newIndex: undefined,      // Index des aktuell gewählten Bildes
 
+        canvasStack: {},
+        imageStack: [],
+        img: [],
+        canvasHeight: 300,
+        canvasWidth: 400,
+
         wrapper:{halfWidth: 0, halfHeight: 0},
 
         timer: {
@@ -15,32 +21,29 @@ $(function() {
 
         animStep: 3,
 
-        canvasStack: {},
-        imageStack: [],
-        img: [],
-        canvasHeight: 300,
-        canvasWidth: 300,
+        opacity: {
+            start: 0.8,
+            end: 0.0
+        },
+        reflexion: {
+            start: 0.0,
+            end: 0.8
+        },
 
         // default options
         options: {
-            start: 'auto',
-            width: 400,
-            height: 300,
-            items: 4,
-            itemMargin: 10,
-            angle: 60,
-            grid: 5,
-            images: ['http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg',
-                     'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg',
-                     'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg'],
-            opacity: {
-                start: 0.8,
-                end: 0.0
-            },
-            reflexion: {
-                start: 0.0,
-                end: 0.8
-            }
+            start: 'auto',      // (integer) Index des Bildes, das initial in der Mitte sein soll (auto = Anzahl Bilder/2)
+            width: "auto",      // (integer, string) Breite des Coverflows (z.B. 400, '90%', 'auto')
+            height: 300,        // (integer) Höhe des Coverflows
+            items: 3,           // (integer) Anzahl ungekippter Bilder im Coverflow
+            itemMargin: 5,      // (integer) Abstand zwischen den Bildern
+            angle: 60,          // (integer) Kipp-Winkel von 0 .. 75 Grad
+            grid: 5,            // (integer) Schrittweite der Skew-Funktion (Kipp-Funktion)
+            images: [
+                'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg',
+                'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg',
+                'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg'
+            ]
         },
 
         // the constructor
@@ -49,17 +52,42 @@ $(function() {
                 elem = self.element,
                 o = self.options;
 
-            self.angle = o.angle ? o.angle : 60;
+            // Kippwinkel
+            self.angle = (o.angle!==undefined && !isNaN(o.angle) && (o.angle>=0) && (o.angle<=75)) ? parseInt(o.angle) : 60;
+            // Höhe
+            o.height = (o.height!==undefined && !isNaN(o.height))? o.height : self.canvasHeight;
+            // Breite
+            if(o.width!==undefined){
+                // Falls es sich um eine Zahl handelt
+                if(!isNaN(o.width)){
+                    o.width = parseInt(o.width);
+                // Falls es sich um einen Prozentwert handelt
+                }else if(/%$/.test(String(o.width)) && elem.width()){
+                    o.width = parseInt(elem.width() * parseInt(o.width)/100);
+                // Falls es sich um den String "auto" handelt
+                }else if(String(o.width).toLowerCase()==="auto" && elem.width()){
+                    o.width = elem.width();
+                // Sonst
+                }else{
+                    o.width = self.canvasWidth;
+                }
+            // Falls es sich um keinen gültigen wert handelt
+            }else{
+                o.width = self.canvasWidth;
+            }
+            // Aktueller Index
             self.oldIndex = self.newIndex = o.start = (o.start==='auto') ? Math.floor(o.images.length/2) : o.start;
 
             // Dimensionen festlegen
             self.canvasHeight = 0.9 * o.height;
             self.canvasWidth = Math.floor(o.width/o.items) - 2*o.itemMargin;
 
+            // Image-Stack erstellen
             for(var i=0; i<o.images.length; i++){
                 self.imageStack[i] = $('<img />');
                 self.imageStack[i][0].src = o.images[i];
 
+                // auf load Event des Bildes reagieren
                 self.imageStack[i].on('load', $.proxy(self._onload, self, self.imageStack[i], i));
             }
         },
@@ -120,32 +148,6 @@ $(function() {
                 .fadeIn(800);
         },
 
-        _scale: function(index){
-            var self = this,
-                elem = self.element,
-                o = self.options,
-                canvasStack = self.canvasStack[index],
-                image = canvasStack.image,
-                factor;
-
-            canvasStack.imgWidth = image.width;
-            canvasStack.imgHeight = image.height;
-
-            // Falls die Breite grösser als die des Canvas ist
-            if(canvasStack.imgWidth > self.canvasWidth){
-                factor = self.canvasWidth / canvasStack.imgWidth;
-                canvasStack.imgWidth = self.canvasWidth;
-                canvasStack.imgHeight = factor * canvasStack.imgHeight;
-            }
-
-            // Falls die Höhe grösser als die Hälfte des Canvas ist
-            if(canvasStack.imgHeight > self.canvasHeight/2){
-                factor = (self.canvasHeight/2) / canvasStack.imgHeight;
-                canvasStack.imgHeight = (self.canvasHeight/2);
-                canvasStack.imgWidth = factor * canvasStack.imgWidth;
-            }
-        },
-
         _buildList: function(){
             var self = this,
                 elem = self.element,
@@ -155,7 +157,6 @@ $(function() {
             // Wrapper für Coverflow-Slider setzen
             self.coverflow = $('<div class="qpCoverflow" />');
             self.coverflow.css({
-                //'background': '#efefef',
                 'position': 'relative',
                 'width': o.width + 'px',
                 'height': o.height + 'px',
@@ -224,7 +225,6 @@ $(function() {
             });
             canvasStack.bufferCanvas.canvas[0].width = canvasStack.imgWidth;
             canvasStack.bufferCanvas.canvas[0].height = 2*canvasStack.imgHeight;
-            //canvasStack.bufferCanvas.canvas[0].height = canvasStack.imgHeight + o.reflexion.end*canvasStack.imgHeight;
 
 
             // Context des Buffer-Canvas
@@ -254,8 +254,8 @@ $(function() {
             // Veritkalen linearen Verlauf für Bildhöhe instanziieren
             objGradient = bufferContext.createLinearGradient(0, 0, 0, canvasStack.imgHeight);
             // Verlaufspunkte setzen
-            objGradient.addColorStop(o.reflexion.start, "rgba(0,0,0," + o.opacity.start + ")");             // Anfangswerte: Farbe/Transparenz
-            objGradient.addColorStop(o.reflexion.end, "rgba(0,0,0," + o.opacity.end + ")");             // Endwerte: Farbe/Transparenz
+            objGradient.addColorStop(self.reflexion.start, "rgba(0,0,0," + self.opacity.start + ")");         // Anfangswerte: Farbe/Transparenz
+            objGradient.addColorStop(self.reflexion.end, "rgba(0,0,0," + self.opacity.end + ")");             // Endwerte: Farbe/Transparenz
             // Verlaufsobjekt an Füllstyle zuweisen
             bufferContext.fillStyle = objGradient;
             // Rechteck mit Verlauf zeichnen (wg. Verknüpfung wird nur nicht transparenter Bereich angezeigt)
@@ -286,6 +286,32 @@ $(function() {
                 self._onCanvasClick(self, $(this));
             });
             //canvasStack.renderCanvas.canvas.on('click', $.proxy(self._onCanvasClick, self, this));
+        },
+
+        _scale: function(index){
+            var self = this,
+                elem = self.element,
+                o = self.options,
+                canvasStack = self.canvasStack[index],
+                image = canvasStack.image,
+                factor;
+
+            canvasStack.imgWidth = image.width;
+            canvasStack.imgHeight = image.height;
+
+            // Falls die Breite grösser als die des Canvas ist
+            if(canvasStack.imgWidth > self.canvasWidth){
+                factor = self.canvasWidth / canvasStack.imgWidth;
+                canvasStack.imgWidth = self.canvasWidth;
+                canvasStack.imgHeight = factor * canvasStack.imgHeight;
+            }
+
+            // Falls die Höhe grösser als die Hälfte des Canvas ist
+            if(canvasStack.imgHeight > self.canvasHeight/2){
+                factor = (self.canvasHeight/2) / canvasStack.imgHeight;
+                canvasStack.imgHeight = (self.canvasHeight/2);
+                canvasStack.imgWidth = factor * canvasStack.imgWidth;
+            }
         },
 
         _onCanvasClick: function(self, element){
@@ -352,9 +378,6 @@ $(function() {
                 });
 
 
-
-
-
                 // Setze die Dimensionen des RenderCanvas
                 self._setSkewWidth(self.canvasStack[self.newIndex], self.canvasStack[self.newIndex].imgWidth);
 
@@ -377,7 +400,13 @@ $(function() {
                 o = self.options,
                 sgn = 0,
                 left = 0,
+                cssLeft,
+                absCssLeft,
+                absLeft,
                 diff = 0,
+                leftDiff,
+                steps,
+                stepWidth,
                 index;
 
             if(self.newIndex !== self.oldIndex){
@@ -404,59 +433,32 @@ $(function() {
 
                 // Halbe Breite des nicht gekippten Bildes addieren und halbe Breite des Wrappers subtrahieren
                 left += parseInt(self.canvasStack[self.newIndex].imgWidth/2) - self.wrapper.halfWidth + o.itemMargin;
+                absLeft = Math.abs(left);
 
+                cssLeft = parseInt(self.list.css('left'));
+                absCssLeft = Math.abs(cssLeft);
 
-                // var leftDiff = Math.abs(parseInt(self.list.css('left'))) - /*(left > 0 ? 1 : -1) * */Math.abs(left),
-                //     stepAmount = self.angle/self.animStep,
-                //     stepWidth = leftDiff/stepAmount;
-
-
-                var leftDiff;
-console.log("parseInt(self.list.css('left')): ", parseInt(self.list.css('left')), ", left:", left);
-                if(parseInt(self.list.css('left'))<0 && left>0){
-                    leftDiff = Math.abs(parseInt(self.list.css('left'))) - /*(left > 0 ? 1 : -1) * */Math.abs(left);
-                }else if(parseInt(self.list.css('left'))<0 && left<0){
-                    leftDiff = Math.abs(parseInt(self.list.css('left'))) + Math.abs(left);
-                }else if(parseInt(self.list.css('left'))>0 && left<0){
-                    leftDiff = Math.abs(left) - parseInt(self.list.css('left'));
+                // Strecke des zu animierenden Weges
+                if(cssLeft<0 && left>0){
+                    leftDiff = absCssLeft - absLeft;
+                }else if(cssLeft<0 && left<0){
+                    leftDiff = absCssLeft + absLeft;
+                }else if(cssLeft>0 && left<0){
+                    leftDiff = absLeft - cssLeft;
                 }else{
-                    console.log('jetzt');
-                    leftDiff = -Math.abs(parseInt(self.list.css('left'))) - Math.abs(left);
+                    leftDiff = -absCssLeft - absLeft;
                 }
 
-
-                var stepAmount = self.angle/self.animStep,
-                    stepWidth = leftDiff/stepAmount;
-
-                console.log('stepWidth:', stepWidth, ", stepAmount: ", stepAmount, ", leftDiff: ", leftDiff);
-                //console.log("parseInt(self.list.css('left')): ", Math.abs(parseInt(self.list.css('left'))), ", left:", Math.abs(left), ", leftDiff: ", leftDiff, ", end: ", -left, ", parseInt(self.list.css('left')): ", parseInt(self.list.css('left')));
+                // Anzahl der Schritte, die für die Animation des Hauptbildes (angle self.angle .. 0) benötigt werden
+                steps = self.angle/self.animStep;
+                // Schrittweite für die Animation der Streckenänderung
+                stepWidth = leftDiff/steps;
 
                 self._animCoverflow(0, sgn, {
                     stepWidth: stepWidth,
-                    left: parseInt(self.list.css('left')),
+                    left: cssLeft,
                     end: -left
                 });
-
-                // !!! TODO: ANIMIEREN !!!
-                self.list.css({
-                    'left': -left + 'px'
-                });
-
-
-
-
-
-                // // Setze die Dimensionen des RenderCanvas
-                // self._setSkewWidth(self.canvasStack[self.newIndex], self.canvasStack[self.newIndex].imgWidth);
-
-                // // !!! TODO: ANIMIEREN (setTimeout => drittes Argument: Winkel von self.angle bis 0) !!!
-                // // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
-                // self._skew(self.canvasStack[self.newIndex].renderCanvas.context, self.canvasStack[self.newIndex].bufferCanvas.canvas[0], 0);
-                // //self.canvasStack[self.newIndex].renderCanvas.context.drawImage(self.canvasStack[self.newIndex].bufferCanvas.canvas[0], 0, 0);
-
-
-
-
 
             }
         },
@@ -478,19 +480,17 @@ console.log("parseInt(self.list.css('left')): ", parseInt(self.list.css('left'))
                 self._skew(self.canvasStack[self.oldIndex].renderCanvas.context, self.canvasStack[self.oldIndex].bufferCanvas.canvas[0], sgn*angle);
 
                 translation.left += translation.stepWidth;
-                // !!! TODO: ANIMIEREN !!!
+                // Streckenänderung animieren
                 self.list.css({
-                    //'left': (translation.left - translation.stepWidth) + 'px'
                     'left': translation.left + 'px'
                 });
-//console.log("translation.left: ", translation.left, ", translation.stepWidth: ", translation.stepWidth);
 
                 // Setze die Dimensionen des RenderCanvas
                 self._setSkewWidthByAngle(self.canvasStack[self.newIndex], sgn*self.angle - sgn*angle);
 
                 // !!! TODO: ANIMIEREN (setTimeout => drittes Argument: Winkel von self.angle bis 0) !!!
                 // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
-                self._skew(self.canvasStack[self.newIndex].renderCanvas.context, self.canvasStack[self.newIndex].bufferCanvas.canvas[0], sgn*self.angle - sgn*angle);
+                self._skew(self.canvasStack[self.newIndex].renderCanvas.context, self.canvasStack[self.newIndex].bufferCanvas.canvas[0], -sgn*self.angle - -sgn*angle);
 
 
                 angle += self.animStep;
@@ -508,7 +508,7 @@ console.log("parseInt(self.list.css('left')): ", parseInt(self.list.css('left'))
                         self._skew(self.canvasStack[self.oldIndex].renderCanvas.context, self.canvasStack[self.oldIndex].bufferCanvas.canvas[0], sgn*self.angle);
                     }
 
-                    // !!! TODO: ANIMIEREN !!!
+                    // Letzter Schritt
                     self.list.css({
                         'left': translation.end + 'px'
                     });
