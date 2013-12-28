@@ -383,8 +383,6 @@ $(function() {
             if(self.newIndex !== self.oldIndex){
                 sgn = (self.newIndex < self.oldIndex) ? -1 : 1;
 
-                self._animCoverflow(0, sgn);
-
 
                 diff = Math.abs(self.oldIndex - self.newIndex);
                 for(var i=1; i<diff; i++){
@@ -407,6 +405,38 @@ $(function() {
                 // Halbe Breite des nicht gekippten Bildes addieren und halbe Breite des Wrappers subtrahieren
                 left += parseInt(self.canvasStack[self.newIndex].imgWidth/2) - self.wrapper.halfWidth + o.itemMargin;
 
+
+                // var leftDiff = Math.abs(parseInt(self.list.css('left'))) - /*(left > 0 ? 1 : -1) * */Math.abs(left),
+                //     stepAmount = self.angle/self.animStep,
+                //     stepWidth = leftDiff/stepAmount;
+
+
+                var leftDiff;
+console.log("parseInt(self.list.css('left')): ", parseInt(self.list.css('left')), ", left:", left);
+                if(parseInt(self.list.css('left'))<0 && left>0){
+                    leftDiff = Math.abs(parseInt(self.list.css('left'))) - /*(left > 0 ? 1 : -1) * */Math.abs(left);
+                }else if(parseInt(self.list.css('left'))<0 && left<0){
+                    leftDiff = Math.abs(parseInt(self.list.css('left'))) + Math.abs(left);
+                }else if(parseInt(self.list.css('left'))>0 && left<0){
+                    leftDiff = Math.abs(left) - parseInt(self.list.css('left'));
+                }else{
+                    console.log('jetzt');
+                    leftDiff = -Math.abs(parseInt(self.list.css('left'))) - Math.abs(left);
+                }
+
+
+                var stepAmount = self.angle/self.animStep,
+                    stepWidth = leftDiff/stepAmount;
+
+                console.log('stepWidth:', stepWidth, ", stepAmount: ", stepAmount, ", leftDiff: ", leftDiff);
+                //console.log("parseInt(self.list.css('left')): ", Math.abs(parseInt(self.list.css('left'))), ", left:", Math.abs(left), ", leftDiff: ", leftDiff, ", end: ", -left, ", parseInt(self.list.css('left')): ", parseInt(self.list.css('left')));
+
+                self._animCoverflow(0, sgn, {
+                    stepWidth: stepWidth,
+                    left: parseInt(self.list.css('left')),
+                    end: -left
+                });
+
                 // !!! TODO: ANIMIEREN !!!
                 self.list.css({
                     'left': -left + 'px'
@@ -416,13 +446,13 @@ $(function() {
 
 
 
-                // Setze die Dimensionen des RenderCanvas
-                self._setSkewWidth(self.canvasStack[self.newIndex], self.canvasStack[self.newIndex].imgWidth);
+                // // Setze die Dimensionen des RenderCanvas
+                // self._setSkewWidth(self.canvasStack[self.newIndex], self.canvasStack[self.newIndex].imgWidth);
 
-                // !!! TODO: ANIMIEREN (setTimeout => drittes Argument: Winkel von self.angle bis 0) !!!
-                // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
-                self._skew(self.canvasStack[self.newIndex].renderCanvas.context, self.canvasStack[self.newIndex].bufferCanvas.canvas[0], 0);
-                //self.canvasStack[self.newIndex].renderCanvas.context.drawImage(self.canvasStack[self.newIndex].bufferCanvas.canvas[0], 0, 0);
+                // // !!! TODO: ANIMIEREN (setTimeout => drittes Argument: Winkel von self.angle bis 0) !!!
+                // // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
+                // self._skew(self.canvasStack[self.newIndex].renderCanvas.context, self.canvasStack[self.newIndex].bufferCanvas.canvas[0], 0);
+                // //self.canvasStack[self.newIndex].renderCanvas.context.drawImage(self.canvasStack[self.newIndex].bufferCanvas.canvas[0], 0, 0);
 
 
 
@@ -432,7 +462,7 @@ $(function() {
         },
 
 
-        _animCoverflow: function(angle, sgn){
+        _animCoverflow: function(angle, sgn, translation){
             var self = this,
                 o = self.options,
                 left = 0,
@@ -446,11 +476,28 @@ $(function() {
                 // !!! TODO: ANIMIEREN (setTimeout => drittes Argument: Winkel von 0 bis self.angle) !!!
                 // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
                 self._skew(self.canvasStack[self.oldIndex].renderCanvas.context, self.canvasStack[self.oldIndex].bufferCanvas.canvas[0], sgn*angle);
+
+                translation.left += translation.stepWidth;
+                // !!! TODO: ANIMIEREN !!!
+                self.list.css({
+                    //'left': (translation.left - translation.stepWidth) + 'px'
+                    'left': translation.left + 'px'
+                });
+//console.log("translation.left: ", translation.left, ", translation.stepWidth: ", translation.stepWidth);
+
+                // Setze die Dimensionen des RenderCanvas
+                self._setSkewWidthByAngle(self.canvasStack[self.newIndex], sgn*self.angle - sgn*angle);
+
+                // !!! TODO: ANIMIEREN (setTimeout => drittes Argument: Winkel von self.angle bis 0) !!!
+                // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
+                self._skew(self.canvasStack[self.newIndex].renderCanvas.context, self.canvasStack[self.newIndex].bufferCanvas.canvas[0], sgn*self.angle - sgn*angle);
+
+
                 angle += self.animStep;
 
                 if(angle <= self.angle){
                     self.timer.hCoverflow = window.setTimeout(function(){
-                        self._animCoverflow(angle, sgn);
+                        self._animCoverflow(angle, sgn, translation);
                     }, self.timer.animDelay);
                 }else{
                     if(angle > self.angle){
@@ -460,6 +507,19 @@ $(function() {
                         // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
                         self._skew(self.canvasStack[self.oldIndex].renderCanvas.context, self.canvasStack[self.oldIndex].bufferCanvas.canvas[0], sgn*self.angle);
                     }
+
+                    // !!! TODO: ANIMIEREN !!!
+                    self.list.css({
+                        'left': translation.end + 'px'
+                    });
+
+                    // Setze die Dimensionen des RenderCanvas
+                    self._setSkewWidth(self.canvasStack[self.newIndex], self.canvasStack[self.newIndex].imgWidth);
+
+                    // !!! TODO: ANIMIEREN (setTimeout => drittes Argument: Winkel von self.angle bis 0) !!!
+                    // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
+                    self._skew(self.canvasStack[self.newIndex].renderCanvas.context, self.canvasStack[self.newIndex].bufferCanvas.canvas[0], 0);
+
 
                     self.oldIndex = self.newIndex;
                 }
