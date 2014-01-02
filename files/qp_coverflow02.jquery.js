@@ -40,9 +40,9 @@ $(function() {
             angle: 60,          // (integer) Kipp-Winkel von 0 .. 75 Grad
             grid: 5,            // (integer) Schrittweite der Skew-Funktion (Kipp-Funktion)
             images: [
-                'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg',
-                'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg',
-                'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg'
+                'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/stack.gif', 'http://canvas.quaese.de/bilder/content/drawimagescale.jpg', 'http://canvas.quaese.de/bilder/content/imagedata.gif',
+                'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/stack.gif', 'http://canvas.quaese.de/bilder/content/drawimagescale.jpg', 'http://canvas.quaese.de/bilder/content/imagedata.gif',
+                'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/stack.gif', 'http://canvas.quaese.de/bilder/content/drawimagescale.jpg', 'http://canvas.quaese.de/bilder/content/imagedata.gif'
             ]
         },
 
@@ -299,18 +299,18 @@ $(function() {
             canvasStack.imgWidth = image.width;
             canvasStack.imgHeight = image.height;
 
-            // Falls die Breite grösser als die des Canvas ist
-            if(canvasStack.imgWidth > self.canvasWidth){
-                factor = self.canvasWidth / canvasStack.imgWidth;
-                canvasStack.imgWidth = self.canvasWidth;
-                canvasStack.imgHeight = factor * canvasStack.imgHeight;
-            }
-
             // Falls die Höhe grösser als die Hälfte des Canvas ist
             if(canvasStack.imgHeight > self.canvasHeight/2){
                 factor = (self.canvasHeight/2) / canvasStack.imgHeight;
                 canvasStack.imgHeight = (self.canvasHeight/2);
                 canvasStack.imgWidth = factor * canvasStack.imgWidth;
+            }
+
+            // Falls die Breite grösser als die des Canvas ist
+            if(canvasStack.imgWidth > self.canvasWidth){
+                factor = self.canvasWidth / canvasStack.imgWidth;
+                canvasStack.imgWidth = self.canvasWidth;
+                canvasStack.imgHeight = factor * canvasStack.imgHeight;
             }
         },
 
@@ -376,6 +376,9 @@ $(function() {
                 self.list.css({
                     'left': -left + 'px'
                 });
+
+
+
 
 
                 // Setze die Dimensionen des RenderCanvas
