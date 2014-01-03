@@ -1,0 +1,6 @@
+<?php
+$REXVALUE = array();
+$REXVALUE[1] = 'REX_VALUE[1]';
+
+include($REX["INCLUDE_PATH"].'/addons/qp_coverflow/output/frontend.inc.php');
+?>
