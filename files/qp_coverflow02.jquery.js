@@ -39,11 +39,11 @@ if(jQuery){
                 options: {
                     start: 'auto',      // (integer) Index des Bildes, das initial in der Mitte sein soll (auto = Anzahl Bilder/2)
                     width: "auto",      // (integer, string) Breite des Coverflows (z.B. 400, '90%', 'auto')
-                    height: 300,        // (integer) Höhe des Coverflows
-                    items: 3,           // (integer) Anzahl ungekippter Bilder im Coverflow
-                    itemMargin: 5,      // (integer) Abstand zwischen den Bildern
-                    angle: 60,          // (integer) Kipp-Winkel von 0 .. 75 Grad
-                    grid: 5,            // (integer) Schrittweite der Skew-Funktion (Kipp-Funktion)
+                    height: 300,        // (integer) Höhe des Coverflows (>=50)
+                    items: 3,           // (integer) Anzahl ungekippter Bilder im Coverflow (von 2 .. 10)
+                    itemMargin: 5,      // (integer) Abstand zwischen den Bildern (von 0 .. 20)
+                    angle: 60,          // (integer) Kipp-Winkel (von 0 .. 75 Grad)
+                    grid: 5,            // (integer) Schrittweite der Skew-Funktion (Kipp-Funktion) (von 1 .. 20)
                     images: [
                         'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/stack.gif', 'http://canvas.quaese.de/bilder/content/drawimagescale.jpg', 'http://canvas.quaese.de/bilder/content/imagedata.gif',
                         'http://canvas.quaese.de/bilder/content/canvas_startbild_1.jpg', 'http://www.zeichentrickserien.de/isnogud2.jpg', 'http://canvas.quaese.de/bilder/content/stack.gif', 'http://canvas.quaese.de/bilder/content/drawimagescale.jpg', 'http://canvas.quaese.de/bilder/content/imagedata.gif',
@@ -57,10 +57,18 @@ if(jQuery){
                         elem = self.element,
                         o = self.options;
 
+                    // Items
+                    self.items = (o.items!==undefined && !isNaN(o.items) && (o.items>=2) && (o.items<=10)) ? parseInt(o.items) : 3;
+                    // Margin
+                    self.itemMargin = (o.itemMargin!==undefined && !isNaN(o.itemMargin) && (o.itemMargin>=0) && (o.itemMargin<=20)) ? parseInt(o.itemMargin) : 5;
+
                     // Kippwinkel
                     self.angle = (o.angle!==undefined && !isNaN(o.angle) && (o.angle>=0) && (o.angle<=75)) ? parseInt(o.angle) : 60;
+                    // Schrittweite fuer Kipp-Funktion
+                    self.grid = (o.grid!==undefined && !isNaN(o.grid) && (o.grid>=1) && (o.grid<=20)) ? parseInt(o.grid) : 5;
+
                     // Höhe
-                    o.height = (o.height!==undefined && !isNaN(o.height))? o.height : self.canvasHeight;
+                    o.height = (o.height!==undefined && !isNaN(o.height) && (o.height>=50))? parseInt(o.height) : self.canvasHeight;
                     // Breite
                     if(o.width!==undefined){
                         // Falls es sich um eine Zahl handelt
