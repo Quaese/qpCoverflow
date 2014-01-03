@@ -8,6 +8,6 @@ $REXVALUE[1] = 'REX_VALUE[1]';
 
 $REXVALUE[1] = (isset($REXVALUE[1]) && $REXVALUE[1]!="")? $REXVALUE[1] : $timestamp;
 
-echo('<h3>qpCoverflow-ID: ' . $REXVALUE[1] . '</h3>');
+echo('<h3>qpCoverflow-ID: coverflow_' . $REXVALUE[1] . '</h3>');
 echo('<input type="hidden" class="text" name="VALUE[1]" value="' . $REXVALUE[1] . '">');
 ?>
