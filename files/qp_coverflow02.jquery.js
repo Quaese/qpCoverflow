@@ -10,14 +10,14 @@ if(jQuery){
                 //list: undefined,          // Unsortierte Liste (UL) zur Aufnahme der Coverflow-Canvas'
                 //oldIndex: undefined,      // Index des bisher gewählten Bildes
                 //newIndex: undefined,      // Index des aktuell gewählten Bildes
+                //canvasStack: {},
+                //imageStack: [],
+                //img: [],
+                //wrapper:{halfWidth: 0, halfHeight: 0},
 
-                canvasStack: {},
-                imageStack: [],
-                img: [],
                 canvasHeight: 300,
                 canvasWidth: 400,
 
-                wrapper:{halfWidth: 0, halfHeight: 0},
 
                 timer: {
                     waitDelay: 250,
@@ -53,19 +53,25 @@ if(jQuery){
 
                 // the constructor
                 _create: function() {
-                    var self = this
+                    var self = this,
                         elem = self.element,
                         o = self.options;
 
+                    // Coverflow-Objekte setzen
+                    self.canvasStack = {};
+                    self.imageStack = [];
+                    self.img = [];
+                    self.wrapper = {halfWidth: 0, halfHeight: 0};
+
                     // Items
-                    self.items = (o.items!==undefined && !isNaN(o.items) && (o.items>=2) && (o.items<=10)) ? parseInt(o.items) : 3;
+                    o.items = (o.items!==undefined && !isNaN(o.items) && (o.items>=2) && (o.items<=10)) ? parseInt(o.items) : 3;
                     // Margin
-                    self.itemMargin = (o.itemMargin!==undefined && !isNaN(o.itemMargin) && (o.itemMargin>=0) && (o.itemMargin<=20)) ? parseInt(o.itemMargin) : 5;
+                    o.itemMargin = (o.itemMargin!==undefined && !isNaN(o.itemMargin) && (o.itemMargin>=0) && (o.itemMargin<=20)) ? parseInt(o.itemMargin) : 5;
 
                     // Kippwinkel
                     self.angle = (o.angle!==undefined && !isNaN(o.angle) && (o.angle>=0) && (o.angle<=75)) ? parseInt(o.angle) : 60;
                     // Schrittweite fuer Kipp-Funktion
-                    self.grid = (o.grid!==undefined && !isNaN(o.grid) && (o.grid>=1) && (o.grid<=20)) ? parseInt(o.grid) : 5;
+                    o.grid = (o.grid!==undefined && !isNaN(o.grid) && (o.grid>=1) && (o.grid<=20)) ? parseInt(o.grid) : 5;
 
                     // Höhe
                     o.height = (o.height!==undefined && !isNaN(o.height) && (o.height>=50))? parseInt(o.height) : self.canvasHeight;
@@ -88,6 +94,7 @@ if(jQuery){
                     }else{
                         o.width = self.canvasWidth;
                     }
+
                     // Aktueller Index
                     self.oldIndex = self.newIndex = o.start = (o.start==='auto') ? Math.floor(o.images.length/2) : o.start;
 
@@ -98,7 +105,7 @@ if(jQuery){
                     // Image-Stack erstellen
                     for(var i=0; i<o.images.length; i++){
                         self.imageStack[i] = $('<img />');
-                        self.imageStack[i][0].src = o.images[i];
+                        self.imageStack[i][0].src = o.images[i] + "?" + new Date().getTime();
 
                         // auf load Event des Bildes reagieren
                         self.imageStack[i].on('load', $.proxy(self._onload, self, self.imageStack[i], i));
@@ -132,7 +139,8 @@ if(jQuery){
                         elem = self.element,
                         o = self.options,
                         sgn,
-                        left = 0;
+                        left = 0,
+                        skewed;
 
                     // Über alle Elemente des CanvasStacks interieren
                     for(var _key in self.canvasStack){
@@ -343,73 +351,6 @@ if(jQuery){
 
 
                 },
-
-                _startAnimation_SAVE: function(){
-                    var self = this,
-                        o = self.options,
-                        sgn = 0,
-                        left = 0,
-                        diff = 0,
-                        index;
-
-                    if(self.newIndex !== self.oldIndex){
-                        sgn = (self.newIndex < self.oldIndex) ? -1 : 1;
-
-                        // Setze die Dimensionen des RenderCanvas
-                        self._setSkewWidth(self.canvasStack[self.oldIndex], self.canvasStack[self.oldIndex].skewWidth);
-
-
-                        // !!! TODO: ANIMIEREN (setTimeout => drittes Argument: Winkel von 0 bis self.angle) !!!
-                        // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
-                        self._skew(self.canvasStack[self.oldIndex].renderCanvas.context, self.canvasStack[self.oldIndex].bufferCanvas.canvas[0], sgn*self.angle);
-
-
-                        diff = Math.abs(self.oldIndex - self.newIndex);
-                        for(var i=1; i<diff; i++){
-                            index = self.oldIndex + sgn*i;
-
-                            // Setze die Dimensionen des RenderCanvas
-                            self._setSkewWidth(self.canvasStack[index], self.canvasStack[index].skewWidth);
-                            // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
-                            self._skew(self.canvasStack[index].renderCanvas.context, self.canvasStack[index].bufferCanvas.canvas[0], sgn*self.angle);
-                        }
-
-
-                        // Über alle Elemente bis zum aktuell gewählten interieren
-                        for(var _key in self.canvasStack){
-                            if(_key >= self.newIndex) break;
-
-                            left += self.canvasStack[_key].skewWidth + 2*o.itemMargin;
-                        }
-
-                        // Halbe Breite des nicht gekippten Bildes addieren und halbe Breite des Wrappers subtrahieren
-                        left += parseInt(self.canvasStack[self.newIndex].imgWidth/2) - self.wrapper.halfWidth + o.itemMargin;
-
-                        // !!! TODO: ANIMIEREN !!!
-                        self.list.css({
-                            'left': -left + 'px'
-                        });
-
-
-
-
-
-                        // Setze die Dimensionen des RenderCanvas
-                        self._setSkewWidth(self.canvasStack[self.newIndex], self.canvasStack[self.newIndex].imgWidth);
-
-                        // !!! TODO: ANIMIEREN (setTimeout => drittes Argument: Winkel von self.angle bis 0) !!!
-                        // Zeichne den Inhalt des BufferCanvas (Orginal+Spiegelung) um den Winkel self.angle gekippt in den Ausgabe(Render)Canvas
-                        self._skew(self.canvasStack[self.newIndex].renderCanvas.context, self.canvasStack[self.newIndex].bufferCanvas.canvas[0], 0);
-                        //self.canvasStack[self.newIndex].renderCanvas.context.drawImage(self.canvasStack[self.newIndex].bufferCanvas.canvas[0], 0, 0);
-
-
-                        self.oldIndex = self.newIndex;
-
-
-
-                    }
-                },
-
 
                 _startAnimation: function(){
                     var self = this,
@@ -648,5 +589,6 @@ if(jQuery){
                 }
             });
         });
+
     })(jQuery);
 }
