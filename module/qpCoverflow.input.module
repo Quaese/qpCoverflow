@@ -1,13 +1,135 @@
-<?php
-include_once($REX['INCLUDE_PATH'].'/addons/qp_coverflow/functions/qp_coverflow-module.inc.php');
+<style type="text/css">
+.qp{}
+.qp h2{
+	font-size: 1.2em;
+	padding-bottom: 6px;
+	margin-bottom: 9px;
+	border-bottom: 1px solid #aaa;
+}
+.qp p.descrP{
+	padding-bottom: 24px;
+}
 
-$timestamp = microtime_string();
+.qp dl {
+	clear: both;
+	margin: 0 0 12px;
+	padding: 6px 0;
+	border-bottom: 1px solid #ddd;
+}
+.qp dl dt {
+	float: left;
+	text-align: right;
+	width: 100px;
+	font-weight: bold;
+}
+/*.qp dl dt::after {
+	content: ':';
+}*/
+.qp dl dd {
+	margin-left: 120px;
+}
+.qp dl dd .descr {
+	padding: 6px 0 0;
+	font-size: 0.95em;
+}
+</style>
 
-$REXVALUE = array();
-$REXVALUE[1] = 'REX_VALUE[1]';
+<div class="qp">
 
-$REXVALUE[1] = (isset($REXVALUE[1]) && $REXVALUE[1]!="")? $REXVALUE[1] : $timestamp;
+	<?php
+	include_once($REX['INCLUDE_PATH'].'/addons/qp_coverflow/functions/qp_coverflow-module.inc.php');
 
-echo('<h3>qpCoverflow-ID: coverflow_' . $REXVALUE[1] . '</h3>');
-echo('<input type="hidden" class="text" name="VALUE[1]" value="' . $REXVALUE[1] . '">');
-?>
+	$timestamp = microtime_string();
+
+	$REXVALUE = array();
+
+	// REX_VALUE muss als String übergeben werden,
+	// da es Platzhalter sind, die anschliessend
+	// ersetzt werden.
+	$REXVALUE[1] = 'REX_VALUE[1]';
+	$REXVALUE[1] = (isset($REXVALUE[1]) && $REXVALUE[1]!="")? $REXVALUE[1] : $timestamp;
+
+	echo('  <h2>qpCoverflow - Konfiguration</h2>');
+	echo('  <p class="descrP">Im nachstehenden Formular kann das Coverflow-Addon konfiguriert werden.<br />Für nicht gesetzte Optionen werden deren Default-Werte genommen.</p>');
+	// echo('  <div>qpCoverflow-ID: coverflow_' . $REXVALUE[1] . '</div>');
+	// echo('  <input type="hidden" class="text" name="VALUE[1]" value="' . $REXVALUE[1] . '">');
+
+	echo('	<dl>');
+	echo('		<dt>Coverflow-ID</dt>');
+	echo('		<dd>');
+	echo('			coverflow_' . $REXVALUE[1] . '<input type="hidden" class="text" name="VALUE[1]" value="' . $REXVALUE[1] . '">');
+	echo('		</dd>');
+	echo('	</dl>');
+
+	?>
+	<dl>
+		<dt>Breite</dt>
+		<dd>
+			<div><input type="text" class="text" name="VALUE[2]" value="REX_VALUE[2]"></div>
+			<div class="descr">
+				(integer, string) - Breite des Coverflows (z.B. 400, 90%, auto)<br />
+				Default: auto
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Höhe</dt>
+		<dd>
+			<div><input type="text" class="text" name="VALUE[3]" value="REX_VALUE[3]"></div>
+			<div class="descr">
+				(integer) - Höhe des Coverflows<br />
+				Default: 300
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Start</dt>
+		<dd>
+			<div><input type="text" class="text" name="VALUE[4]" value="REX_VALUE[4]"></div>
+			<div class="descr">
+				(integer, string) - Indes des Bildes, das zuerst in der Mitte angezeigt werden soll (auto = Bild in der Mitte des Arrays)<br />
+				Default: auto
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>items</dt>
+		<dd>
+			<div><input type="text" class="text" name="VALUE[5]" value="REX_VALUE[5]"></div>
+			<div class="descr">
+				(integer) - Anzahl ungekippter Bilder<br />
+				Default: 3
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Margin</dt>
+		<dd>
+			<div><input type="text" class="text" name="VALUE[6]" value="REX_VALUE[6]"></div>
+			<div class="descr">
+				(integer) - Abstand zwischen den Bildern (von 0 .. 20)<br />
+				Default: 5
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Kipp-Winkel</dt>
+		<dd>
+			<div><input type="text" class="text" name="VALUE[7]" value="REX_VALUE[7]"></div>
+			<div class="descr">
+				(integer) - Kipp-Winkel von 0 .. 75 Grad<br />
+				Default: 60
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>Schrittweite</dt>
+		<dd>
+			<div><input type="text" class="text" name="VALUE[8]" value="REX_VALUE[8]"></div>
+			<div class="descr">
+				(integer) - Schrittweite beim Kippen der Bilder (von 1 .. 20)<br /> <small>(Je kleiner der Wert, desto genauer die Darstellung, aber umso rechenaufwändiger)</small><br />
+				Default: 5
+			</div>
+		</dd>
+	</dl>
+</div>
