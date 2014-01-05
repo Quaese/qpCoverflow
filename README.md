@@ -4,7 +4,7 @@
 
 # qpCoverflow fuer REDAXO
 
-qpCoverflow ist ein AddOn für das CMS [REDAXO] (Version 4.4.1).
+qpCoverflow ist ein AddOn für das CMS [REDAXO] Version 4.4.1.
 
 ## Voraussetzung _Frontend_
 Es müssen [jQuery] und [jQueryUI] im Frontend eingebunden sein.
@@ -14,7 +14,7 @@ Es müssen [jQuery] und [jQueryUI] im Frontend eingebunden sein.
 - in AddOn-Verzeichnis der REDAXO-Installation (`REDAXO/include/addons/`) entpacken
 - Verzeichnis in `qp_coverflow` umbenennen
 - Verzeichnisstruktur unterhalb `qp_coverflow`  
-/extensions/  
+```/extensions/  
 /files/  
 /functions/  
 /module/  
@@ -25,7 +25,7 @@ config.inc.php
 help.inc.php  
 install.inc.php  
 install.sql  
-uninstall.inc.php
+uninstall.inc.php```
 
 Eventuell muss diese Verzeichnisstruktur aus einem untergordneten Verzeichnis nach `REDAXO/include/addons/qp_coverflow/` verschoben werden
 - Backend von REDAXO starten
