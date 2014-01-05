@@ -2,9 +2,15 @@
 // $REXVALUE[i] wurde in der Ausgabe des Moduls qpCoverflow gesetzt
 // $REXVALUE[i] = 'REX_VALUE[i]';
 
-// Variablen vorbelegen
-$height = $width = $cssWidth = $start = $items = $itemMargin = $angle = $grid = false;
+// $REXFILELIST[i] wurde in der Ausgabe des Moduls qpCoverflow gesetzt
+// $REXFILELIST[i] = 'REX_MEDIALIST[i]';
+// hier:  $REXFILELIST[1] = ("REX_MEDIALIST[1]" != "") ? explode(',', 'REX_MEDIALIST[1]') : array();
 
+// Variablen vorbelegen
+$height = $width = $cssWidth = $start = $items = $itemMargin = $angle = $grid = $images = false;
+
+
+// --- [Auswertung der Konfigurations-Parameter fuer Coverflow] ---------------------------------------------------------
 // ID Variable
 $strCoverflowId = "coverflow" . ((isset($REXVALUE[1]) && $REXVALUE[1]!="")? "_".$REXVALUE[1] : "");
 // Breite
@@ -49,7 +55,21 @@ $grid = (isset($REXVALUE[8]) && $REXVALUE[8]!="")? (int)$REXVALUE[8] : false;
 // $REXVALUE[13];
 // $REXVALUE[14];
 
-// Optionen-Objekt fuer Coverflow-Widget erstellen
+
+// --- [Auswertung der FileList fuer Coverflow-Bilder] -------------------------------------------------------------------
+if(count($REXFILELIST[1]) > 0){
+	$images = "[";
+
+	for($i=0; $i<count($REXFILELIST[1]); $i++){
+		$images .= "'" . $REX['HTDOCS_PATH'] . (substr($REX['HTDOCS_PATH'], -1) != '/' ? '/' : '') . 'files/' . $REXFILELIST[1][$i] . "'";
+		$images .= ($i < (count($REXFILELIST[1])-1)) ? "," : "";
+	}
+
+	$images .= "]";
+}
+
+
+// --- [Optionen-Objekt fuer Coverflow-Widget erstellen] -------------------------------------------------------------------
 $strOptions = "{\n";
 $strOptions .= "\tdummy: 1";
 if($width) $strOptions .= ",\n\twidth: " . $width . "";
@@ -59,6 +79,7 @@ if($items) $strOptions .= ",\n\titems: " . $items . "";
 if($itemMargin) $strOptions .= ",\n\titemMargin: " . $itemMargin . "";
 if($angle) $strOptions .= ",\n\tangle: " . $angle . "";
 if($grid) $strOptions .= ",\n\tgrid: " . $grid . "";
+if($images) $strOptions .= ",\n\timages: " . $images . "";
 $strOptions .= "\n}";
 
 
@@ -69,8 +90,8 @@ echo('<div id="'.$strCoverflowId.'"></div>');
 
 // Coverflow-Sources nur einmal einbinden
 if(!isset($REX['qpCoverflowFlag'])){
-	echo('<link href="' . $REX['HTDOCS_PATH'] . 'files/addons/qp_coverflow/qp_coverflow.css" rel="stylesheet" type="text/css">');
-	echo('<script src="' . $REX['HTDOCS_PATH'] . 'files/addons/qp_coverflow/qp_coverflow.jquery.js" type="text/javascript"></script>');
+	echo('<link href="' . $REX['HTDOCS_PATH'] . (substr($REX['HTDOCS_PATH'], -1) != '/' ? '/' : '') . 'files/addons/qp_coverflow/qp_coverflow.css" rel="stylesheet" type="text/css">');
+	echo('<script src="' . $REX['HTDOCS_PATH'] . (substr($REX['HTDOCS_PATH'], -1) != '/' ? '/' : '') . 'files/addons/qp_coverflow/qp_coverflow.jquery.js" type="text/javascript"></script>');
 	$REX['qpCoverflowFlag'] = 1;
 }
 
@@ -84,9 +105,8 @@ if(jQuery){
 			if($.custom && $.custom.qpCoverflow){
 		    	$('#<?php echo($strCoverflowId); ?>').qpCoverflow(<?php echo($strOptions); ?>);
 			}else{
-				//$('#<?php echo($strCoverflowId); ?>').append('<img src="<?php echo($REX['HTDOCS_PATH']); ?>files/addons/qp_coverflow/coverflow_placeholder_400x300.jpg" width="<?php echo($width); ?>" height="<?php echo($height); ?>" />');
 				$('#<?php echo($strCoverflowId); ?>').css({
-					'background': "#111 url(<?php echo($REX['HTDOCS_PATH']); ?>files/addons/qp_coverflow/coverflow_placeholder_400x300.jpg) 50% 50% no-repeat",
+					'background': "#111 url(<?php echo($REX['HTDOCS_PATH'] . (substr($REX['HTDOCS_PATH'], -1) != '/' ? '/' : '')); ?>files/addons/qp_coverflow/coverflow_placeholder_400x300.jpg) 50% 50% no-repeat",
 					'max-width' : '725px',
 					'width': "<?php echo($cssWidth); ?>",
 					'height': "<?php echo(($height?$height:300) . 'px'); ?>"
