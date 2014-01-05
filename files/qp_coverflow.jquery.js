@@ -1,3 +1,10 @@
+/* ****************************************************************************************** *
+ * Das Script kann frei verwendet werden, dieser Kommentar sowie die Nennung des Nicks
+ * und der URL müssen jedoch erhalten bleiben.
+ *
+ *                                                           (c) Quaese (www.quaese.de), 2014
+ * ****************************************************************************************** */
+
 if(jQuery){
     (function($){
 
