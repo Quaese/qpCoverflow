@@ -37,6 +37,9 @@ Eventuell muss diese Verzeichnisstruktur aus einem untergordneten Verzeichnis na
 - Im gewünschten Artikel unter `Block hinzufügen` das Modul `qpCoverflow` wählen und konfigurieren
 
 ### Konfigurations-Parameter
+- __Bilder__ (array):  
+	FileList mit Bildquellen
+
 - __Breite__ (integer, string):  
 	Breite des Coverflows (z.B. 400, '90%', 'auto')  
 	Default: 'auto'
@@ -65,9 +68,6 @@ Eventuell muss diese Verzeichnisstruktur aus einem untergordneten Verzeichnis na
 	Schrittweite beim Kippen (Kipp-Funktion) (von 1 .. 20)  
 	(Je kleiner der Wert, je genauer die Darstellung, aber umso rechenaufwändiger und langsamer die Animation)  
 	Default: 5
-
-- Noch nicht verfügbar!!! __images__ (array):  
-	Array mit Bildquellen
 
 ## De-Installation
 - Bevor mit der De-Installation begonnen wird, müssen alle qpCoverflow-Module aus den Artikeln entfernt werden
@@ -108,7 +108,13 @@ Soll das Modul nach der Installation mit den Aenderungen zur Verfuegung stehen, 
 
 
 ## ToDo
-- Modul-Handling: Eintrag zu `qpCoverflow` aus Tabelle `rex_module` loeschen (schon möglich, siehe install.sql - ABER: Wie verfahren mit Artikeln, die Modul bereits enthalten? In welchen Tabellen sind diese zu finden? (rex_article_slice))
+- Modul-Handling: Beim De-Installieren Eintrag zu `qpCoverflow` aus Tabelle `rex_module` loeschen  
+(Besteht eine Möglichkeit wie bei install.sql?)
+- Bei Installation Updaten der Artikel, die `qpCoverflow-Modul` enthalten  
+(schon möglich, siehe install.sql  
+ABER: Wie verfahren mit Artikeln, die Modul bereits enthalten? In welchen Tabellen sind diese zu finden? (rex_article_slice)  
+ANMERKUNG: Bei einem Update der `modultyp_id` in der Tabelle `rex_article_slice` auf die aktuelle `qpCoverflow-Modul-ID` werden bereits eingefügte Coverflows in Artikeln nicht mehr angezeigt  
+TESTEN: Stimmt ANMERKUNG noch, nachdem das AddOn fertig gestellt ist?)
 - Code aufräumen
 - ~~Modul-/Ausgabe-Handling: `/qp_coverflow/output/frontend.inc.php` => ist `custom.qpCoverflow` nicht vorhanden => Ersatz anzeigen (z.B. Bild, Nachricht zu fehlender jQueryUI ...)~~
 - Bilder in Modul-Eingabe einfuegen (REX_FILE?)
