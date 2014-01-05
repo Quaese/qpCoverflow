@@ -3,7 +3,7 @@
 // $REXVALUE[i] = 'REX_VALUE[i]';
 
 // Variablen vorbelegen
-$height = $width = $start = $items = $itemMargin = $angle = $grid = false;
+$height = $width = $cssWidth = $start = $items = $itemMargin = $angle = $grid = false;
 
 // ID Variable
 $strCoverflowId = "coverflow" . ((isset($REXVALUE[1]) && $REXVALUE[1]!="")? "_".$REXVALUE[1] : "");
@@ -13,9 +13,11 @@ if(isset($REXVALUE[2]) && $REXVALUE[2]!=""){
 	if(preg_match('/(%|^auto$)/', $REXVALUE[2], $treffer)){
 		//echo("treffer: " . $treffer[0]);
 		$width = "'" . $REXVALUE[2] . "'";
+		$cssWidth = $width;
 	// Sonst (integer)
 	}else{
 		$width = (int)$REXVALUE[2];
+		$cssWidth = $width . "px";
 	}
 }
 // Hoehe
@@ -68,7 +70,7 @@ echo('<div id="'.$strCoverflowId.'"></div>');
 // Coverflow-Sources nur einmal einbinden
 if(!isset($REX['qpCoverflowFlag'])){
 	echo('<link href="' . $REX['HTDOCS_PATH'] . 'files/addons/qp_coverflow/qp_coverflow.css" rel="stylesheet" type="text/css">');
-	echo('<script src="' . $REX['HTDOCS_PATH'] . 'files/addons/qp_coverflow/qp_coverflow02.jquery.js" type="text/javascript"></script>');
+	echo('<script src="' . $REX['HTDOCS_PATH'] . 'files/addons/qp_coverflow/qp_coverflow.jquery.js" type="text/javascript"></script>');
 	$REX['qpCoverflowFlag'] = 1;
 }
 
@@ -78,8 +80,17 @@ if(!isset($REX['qpCoverflowFlag'])){
 if(jQuery){
     (function($){
 		$(function(){
+			// Falls das Coverflow-Widget zur Verfügung steht
 			if($.custom && $.custom.qpCoverflow){
 		    	$('#<?php echo($strCoverflowId); ?>').qpCoverflow(<?php echo($strOptions); ?>);
+			}else{
+				//$('#<?php echo($strCoverflowId); ?>').append('<img src="<?php echo($REX['HTDOCS_PATH']); ?>files/addons/qp_coverflow/coverflow_placeholder_400x300.jpg" width="<?php echo($width); ?>" height="<?php echo($height); ?>" />');
+				$('#<?php echo($strCoverflowId); ?>').css({
+					'background': "#111 url(<?php echo($REX['HTDOCS_PATH']); ?>files/addons/qp_coverflow/coverflow_placeholder_400x300.jpg) 50% 50% no-repeat",
+					'max-width' : '725px',
+					'width': "<?php echo($cssWidth); ?>",
+					'height': "<?php echo(($height?$height:300) . 'px'); ?>"
+				});
 			}
 		});
     })(jQuery);
