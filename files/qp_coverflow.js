@@ -1,3 +1,0 @@
-$(function(){
-    $('#coverflow').qpCoverflow();
-});
