@@ -116,10 +116,10 @@ ABER: Wie verfahren mit Artikeln, die Modul bereits enthalten? In welchen Tabell
 ANMERKUNG: Bei einem Update der `modultyp_id` in der Tabelle `rex_article_slice` auf die aktuelle `qpCoverflow-Modul-ID` werden bereits eingefügte Coverflows in Artikeln nicht mehr angezeigt  
 TESTEN: Stimmt ANMERKUNG noch, nachdem das AddOn fertig gestellt ist?)
 - Code aufräumen
-- ~~Modul-/Ausgabe-Handling: `/qp_coverflow/output/frontend.inc.php` => ist `custom.qpCoverflow` nicht vorhanden => Ersatz anzeigen (z.B. Bild, Nachricht zu fehlender jQueryUI ...)~~
-- Bilder in Modul-Eingabe einfuegen (REX_FILE?)
-- Bilder-Array (images) in Modul-Ausgabe übergeben
-- Testen bzw. anpassen für Versionen grösser 4.4.1
+- (done) ~~Modul-/Ausgabe-Handling: `/qp_coverflow/output/frontend.inc.php` => ist `custom.qpCoverflow` nicht vorhanden => Ersatz anzeigen (z.B. Bild, Nachricht zu fehlender jQueryUI ...)~~
+- (done) ~~Bilder in Modul-Eingabe einfuegen (REX_FILE?)~~
+- (done) ~~Bilder-Array (images) in Modul-Ausgabe übergeben~~
+- Testen bzw. Anpassen für Versionen grösser 4.4.1
 - Mittleres Bild im Coverflow mit Link versehen
 
 ## Ideen
