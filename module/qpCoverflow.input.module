@@ -63,6 +63,15 @@
 
 	?>
 	<dl>
+		<dt>Bilder</dt>
+		<dd>
+			<div>
+				Bilder für Coverflow auswählen.
+			</div>
+			<div>REX_MEDIALIST_BUTTON[1]</div>
+		</dd>
+	</dl>
+	<dl>
 		<dt>Breite</dt>
 		<dd>
 			<div><input type="text" class="text" name="VALUE[2]" value="REX_VALUE[2]"></div>
