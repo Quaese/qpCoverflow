@@ -75,7 +75,7 @@ Eventuell muss diese Verzeichnisstruktur aus einem untergordneten Verzeichnis na
 - `qp_coverflow` deinstallieren
 - Menupunkt `Module` wählen
 - Modul `qpCoverflow` löschen
-
+  
 
 ---
 
@@ -109,6 +109,7 @@ Soll das Modul nach der Installation mit den Aenderungen zur Verfuegung stehen, 
 
 ## ToDo
 - Modul-Handling: Eintrag zu `qpCoverflow` aus Tabelle `rex_module` loeschen (schon möglich, siehe install.sql - ABER: Wie verfahren mit Artikeln, die Modul bereits enthalten? In welchen Tabellen sind diese zu finden? (rex_article_slice))
+- Code aufräumen
 - ~~Modul-/Ausgabe-Handling: `/qp_coverflow/output/frontend.inc.php` => ist `custom.qpCoverflow` nicht vorhanden => Ersatz anzeigen (z.B. Bild, Nachricht zu fehlender jQueryUI ...)~~
 - Bilder in Modul-Eingabe einfuegen (REX_FILE?)
 - Bilder-Array (images) in Modul-Ausgabe übergeben
