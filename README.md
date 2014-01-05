@@ -76,6 +76,7 @@ Eventuell muss diese Verzeichnisstruktur aus einem untergordneten Verzeichnis na
 - Menupunkt `Module` wählen
 - Modul `qpCoverflow` löschen
 
+---
 
 ## Entwicklung (Modul qpCoverflow)
 Waehrend der Entwicklung koennen die Aenderungen direkt in das Modul (Eingabe-/Ausgabefenster) eingetragen werden.
