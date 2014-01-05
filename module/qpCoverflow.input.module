@@ -87,7 +87,7 @@
 		<dd>
 			<div><input type="text" class="text" name="VALUE[4]" value="REX_VALUE[4]"></div>
 			<div class="descr">
-				(integer, string) - Indes des Bildes, das zuerst in der Mitte angezeigt werden soll (auto = Bild in der Mitte des Arrays)<br />
+				(integer, string) - Index des Bildes, das zuerst in der Mitte angezeigt werden soll (auto = Bild in der Mitte des Arrays)<br />
 				Default: auto
 			</div>
 		</dd>
