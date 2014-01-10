@@ -110,6 +110,7 @@ Soll das Modul nach der Installation mit den Aenderungen zur Verfuegung stehen, 
 ## ToDo
 - Prüfen, ob `jQueryUI` schon im Dokument eingebunden ist und falls nicht, mit JavaScript einbinden (`qp_coverflow/output/frontend.inc.php`)  
 FRAGE: Wie kann ermittelt werden, ob UI geladen ist? (jQuery.widget)
+ANTWORT: Besser Prüfung mit `jQuery.ui`
 - Modul-Handling: Beim De-Installieren Eintrag zu `qpCoverflow` aus Tabelle `rex_module` loeschen  
 (Besteht eine Möglichkeit wie bei install.sql?)
 - Bei Installation Updaten der Artikel, die `qpCoverflow-Modul` enthalten  
