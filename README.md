@@ -69,6 +69,18 @@ Eventuell muss diese Verzeichnisstruktur aus einem untergordneten Verzeichnis na
 	(Je kleiner der Wert, je genauer die Darstellung, aber umso rechenaufwändiger und langsamer die Animation)  
 	Default: 5
 
+- __jQuery__ (boolean):  
+	Das jQuery-Framework ist notwendig, dass das Coverflow-AddOn funktioniert. Wird im Frontend gar nichts angezeigt, muss der Haken für diese Option gesetzt werden.  
+	- Sollten __mehr__ Coverflows auf einer Seite eingebunden sein, reicht es, den Haken bei __einem Block__ zu setzen.
+	- Fehlen jQuery und jQueryUI, so müssen die Haken für __beide__ Frameworks im __gleichen__ Block gesezt werden.
+	Default: false
+
+- __jQueryUI__ (boolean):  
+	Das jQueryUI-Framework ist notwendig, dass das Coverflow-AddOn funktioniert. Wird im Frontend nur ein Bild statt des Coverflows angezeigt oder eine Meldung, dass das jQueryUI-Framework fehlt, sollte der Haken gesetzt werden.  
+	- Sollten __mehr__ Coverflows auf einer Seite eingebunden sein, reicht es, den Haken bei __einem Block__ zu setzen.
+	- Fehlen jQuery und jQueryUI, so müssen die Haken für __beide__ Frameworks im __gleichen__ Block gesezt werden.
+	Default: false
+
 ## De-Installation
 - Bevor mit der De-Installation begonnen wird, müssen alle qpCoverflow-Module aus den Artikeln entfernt werden
 - Menupunkt `AddOn` wählen
@@ -109,8 +121,10 @@ Soll das Modul nach der Installation mit den Aenderungen zur Verfuegung stehen, 
 
 ## ToDo
 - Prüfen, ob `jQueryUI` schon im Dokument eingebunden ist und falls nicht, mit JavaScript einbinden (`qp_coverflow/output/frontend.inc.php`)  
-FRAGE: Wie kann ermittelt werden, ob UI geladen ist? (jQuery.widget)
-ANTWORT: Besser Prüfung mit `jQuery.ui`
+FRAGE: Wie kann ermittelt werden, ob UI geladen ist? (jQuery.widget)  
+ANTWORT: Besser Prüfung mit `jQuery.ui`  
+ANTWORT 2: Ist so nicht trivial lösbar.  
+LOESUNG: Stattdessen wird im qpCoverflow eine weitere Option (Checkbox) angeboten, mit der das jQueryUI eingebunden werden kann.
 - Modul-Handling: Beim De-Installieren Eintrag zu `qpCoverflow` aus Tabelle `rex_module` loeschen  
 (Besteht eine Möglichkeit wie bei install.sql?)
 - Bei Installation Updaten der Artikel, die `qpCoverflow-Modul` enthalten  
