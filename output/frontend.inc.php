@@ -47,8 +47,12 @@ $angle = (isset($REXVALUE[7]) && $REXVALUE[7]!="")? (int)$REXVALUE[7] : false;
 // Schrittweite fuer Kipp-Funktion
 $grid = (isset($REXVALUE[8]) && $REXVALUE[8]!="")? (int)$REXVALUE[8] : false;
 
+// jQueryUI einbinden
+$incUI = (isset($REXVALUE[9]) && $REXVALUE[9]!="")? true : false;
+// jQueryUI einbinden
+$incJQuery = (isset($REXVALUE[10]) && $REXVALUE[10]!="")? true : false;
+
 // Bisher nicht genutzt
-// $REXVALUE[9];
 // $REXVALUE[10];
 // $REXVALUE[11];
 // $REXVALUE[12];
@@ -88,6 +92,18 @@ $strOptions .= "\n}";
 // HTML-Element zur Aufnahme des Coverflows einbinden
 echo('<div id="'.$strCoverflowId.'"></div>');
 
+// jQueryUI-Sources nur einmal einbinden (falls Flag gesetzt wurde)
+if(!isset($REX['jQueryFlag']) && $incUI){
+	echo('<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>');
+	$REX['jQueryFlag'] = 1;
+}
+
+// jQueryUI-Sources nur einmal einbinden (falls Flag gesetzt wurde)
+if(!isset($REX['jQueryUiFlag']) && $incUI){
+	echo('<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>');
+	$REX['jQueryUiFlag'] = 1;
+}
+
 // Coverflow-Sources nur einmal einbinden
 if(!isset($REX['qpCoverflowFlag'])){
 	echo('<link href="' . $REX['HTDOCS_PATH'] . (substr($REX['HTDOCS_PATH'], -1) != '/' ? '/' : '') . 'files/addons/qp_coverflow/qp_coverflow.css" rel="stylesheet" type="text/css">');
@@ -98,7 +114,8 @@ if(!isset($REX['qpCoverflowFlag'])){
 ?>
 
 <script type="text/javascript">
-if(jQuery){
+if(typeof jQuery != "undefined"){
+	//console.log(jQuery.ui);
     (function($){
 		$(function(){
 			// Falls das Coverflow-Widget zur Verfügung steht

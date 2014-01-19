@@ -30,7 +30,16 @@
 }
 .qp dl dd .descr {
 	padding: 6px 0 0;
+	font-size: 1em;
+}
+.qp dl dd .descr small{
 	font-size: 0.95em;
+}
+.qp dl dd .descr small.list{
+	display: block;
+	margin: 6px 0;
+	padding: 9px;
+	border: 1px solid #ddd;
 }
 </style>
 
@@ -48,6 +57,12 @@
 	// ersetzt werden.
 	$REXVALUE[1] = 'REX_VALUE[1]';
 	$REXVALUE[1] = (isset($REXVALUE[1]) && $REXVALUE[1]!="")? $REXVALUE[1] : $timestamp;
+	// jQueryUI-Checkbox
+	$REXVALUE[9] = 'REX_VALUE[9]';
+	$REXVALUE[9] = (isset($REXVALUE[9]) && $REXVALUE[9]!="")? "checked=\"checked\"" : "";
+	// jQuery-Checkbox
+	$REXVALUE[10] = 'REX_VALUE[10]';
+	$REXVALUE[10] = (isset($REXVALUE[10]) && $REXVALUE[10]!="")? "checked=\"checked\"" : "";
 
 	echo('  <h2>qpCoverflow - Konfiguration</h2>');
 	echo('  <p class="descrP">Im nachstehenden Formular kann das Coverflow-Addon konfiguriert werden.<br />Für nicht gesetzte Optionen werden deren Default-Werte genommen.</p>');
@@ -138,6 +153,26 @@
 			<div class="descr">
 				(integer) - Schrittweite beim Kippen der Bilder (von 1 .. 20)<br /> <small>(Je kleiner der Wert, desto genauer die Darstellung, aber umso rechenaufwändiger)</small><br />
 				Default: 5
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>jQuery</dt>
+		<dd>
+			<div><input name="VALUE[10]" type="checkbox" id="VALUE[10]" value="1" <?php echo($REXVALUE[10]); ?> /></div>
+			<div class="descr">
+				(boolean) - Das jQuery-Framework ist notwendig, dass das Coverflow-AddOn funktioniert. Wird im Frontend gar nichts angezeigt, muss der Haken für diese Option gesetzt werden.<br /><small class="list">- Sollten <b>mehr</b> Coverflows auf einer Seite eingebunden sein, reicht es, den Haken bei <b>einem Block</b> zu setzen.<br />- Fehlen jQuery und jQueryUI, so müssen die Haken für <b>beide</b> Frameworks im <b>gleichen</b> Block gesezt werden.</small><br />
+				Default: nicht gesetzt
+			</div>
+		</dd>
+	</dl>
+	<dl>
+		<dt>jQueryUI</dt>
+		<dd>
+			<div><input name="VALUE[9]" type="checkbox" id="VALUE[9]" value="1" <?php echo($REXVALUE[9]); ?> /></div>
+			<div class="descr">
+				(boolean) - Das jQueryUI-Framework ist notwendig, dass das Coverflow-AddOn funktioniert. Wird im Frontend nur ein Bild statt des Coverflows angezeigt, fehlt das jQueryUI-Framework und der Haken für diese Option muss gesetzt werden.<br /><small class="list">- Sollten <b>mehr</b> Coverflows auf einer Seite eingebunden sein, reicht es, den Haken bei <b>einem Block</b> zu setzen.<br />- Fehlen jQuery und jQueryUI, so müssen die Haken für <b>beide</b> Frameworks im <b>gleichen</b> Block gesezt werden.</small><br />
+				Default: nicht gesetzt
 			</div>
 		</dd>
 	</dl>

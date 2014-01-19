@@ -5,7 +5,8 @@
  *                                                           (c) Quaese (www.quaese.de), 2014
  * ****************************************************************************************** */
 
-if(jQuery){
+//if(jQuery){
+if(typeof jQuery != "undefined"){
     (function($){
 
         $(function() {
